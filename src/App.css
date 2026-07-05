@@ -108,6 +108,15 @@
   font-size: 12px;
 }
 
+.model-loading {
+  color: #aab2ba;
+  font-size: 14px;
+  white-space: nowrap;
+  background: rgba(18, 21, 24, 0.7);
+  padding: 6px 14px;
+  border-radius: 8px;
+}
+
 /* --- status banner --- */
 
 .banner {

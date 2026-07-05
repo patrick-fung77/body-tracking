@@ -48,7 +48,8 @@ export function HUD(props: HudProps) {
             value={props.view}
             onChange={(e) => props.onViewChange(e.target.value as ViewMode)}
           >
-            <option value="anatomy">Anatomy (segments)</option>
+            <option value="skeleton3d">Skeleton (realistic)</option>
+            <option value="anatomy">Anatomy (layers)</option>
             <option value="stick">Stick figure</option>
           </select>
         </label>
