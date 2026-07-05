@@ -15,7 +15,7 @@ export default function App() {
   retargeterRef.current ??= new Retargeter();
   const retargeter = retargeterRef.current;
 
-  const [view, setView] = useState<ViewMode>("anatomy");
+  const [view, setView] = useState<ViewMode>("skeleton3d");
   const [layers, setLayers] = useState<LayerVisibility>({
     skin: true,
     muscle: true,

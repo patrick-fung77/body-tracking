@@ -1,13 +1,15 @@
+import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Stats } from "@react-three/drei";
+import { Html, OrbitControls, Stats } from "@react-three/drei";
 import { StickFigure } from "../rig/StickFigure";
+import { SkeletonModel } from "../rig/SkeletonModel";
 import {
   AnatomySegments,
   type LayerVisibility,
 } from "../rig/AnatomySegments";
 import type { Retargeter } from "../rig/retarget";
 
-export type ViewMode = "anatomy" | "stick";
+export type ViewMode = "skeleton3d" | "anatomy" | "stick";
 
 /** World landmarks are hip-origin, so lift the rig to standing height. */
 const HIP_HEIGHT = 0.95;
@@ -43,10 +45,20 @@ export function Scene3D({
       <directionalLight position={[-3, 2, -2]} intensity={0.4} />
 
       <group position={[0, HIP_HEIGHT, 0]}>
-        {view === "stick" ? (
-          <StickFigure retargeter={retargeter} />
-        ) : (
+        {view === "stick" && <StickFigure retargeter={retargeter} />}
+        {view === "anatomy" && (
           <AnatomySegments retargeter={retargeter} layers={layers} />
+        )}
+        {view === "skeleton3d" && (
+          <Suspense
+            fallback={
+              <Html center>
+                <div className="model-loading">Loading skeleton model…</div>
+              </Html>
+            }
+          >
+            <SkeletonModel retargeter={retargeter} />
+          </Suspense>
         )}
         {showAxes && <axesHelper args={[0.6]} />}
       </group>
