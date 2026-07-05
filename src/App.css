@@ -1,0 +1,126 @@
+.app {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+.scene-root {
+  position: absolute;
+  inset: 0;
+}
+
+/* --- webcam picture-in-picture with 2D landmark overlay --- */
+
+.pose-overlay {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 264px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.pose-overlay video {
+  display: block;
+  width: 100%;
+  transform: scaleX(-1); /* mirror, like a webcam preview */
+}
+
+.pose-overlay canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(-1); /* keep overlay aligned with mirrored video */
+}
+
+/* --- control panel --- */
+
+.panel {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 210px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(18, 21, 24, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e8eaed;
+  font-size: 13px;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.panel-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.panel .row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.panel .row:has(input) {
+  justify-content: flex-start;
+}
+
+.panel .row input[type="checkbox"] {
+  margin: 0;
+}
+
+.panel select {
+  background: #2a2f35;
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  padding: 3px 6px;
+  font-size: 12px;
+}
+
+.panel .layers {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 6px 10px 8px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.panel .layers legend {
+  font-size: 11px;
+  padding: 0 4px;
+  color: #aab2ba;
+}
+
+.panel .fps {
+  font-variant-numeric: tabular-nums;
+  color: #9fd49f;
+  font-size: 12px;
+}
+
+/* --- status banner --- */
+
+.banner {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 18px;
+  border-radius: 8px;
+  background: rgba(18, 21, 24, 0.85);
+  border: 1px solid rgba(255, 200, 80, 0.5);
+  color: #ffd479;
+  font-size: 14px;
+  max-width: 70vw;
+  text-align: center;
+}
