@@ -18,8 +18,9 @@ Open the printed URL (camera requires localhost or HTTPS), allow camera access,
 and step back so your full body is in frame.
 
 - **Orbit** the 3D camera with the mouse (drag / scroll) — independent of tracking.
-- **Model** switcher: realistic rigged skeleton (default), layered anatomy
-  primitives, or the debug stick figure (blue = your left, orange = your right).
+- **Model** switcher: realistic rigged skeleton (default), pink cartoon
+  character, layered anatomy primitives, or the debug stick figure
+  (blue = your left, orange = your right).
 - **Layers** panel toggles skin / muscle / skeleton on the *anatomy primitives*
   model (the realistic model is skeleton-only, so layers don't apply to it).
 - **Mirror mode** flips X so the model moves like a mirror image.
@@ -43,7 +44,7 @@ src/
   rig/retarget.ts          world landmarks → smoothed per-bone quaternions
   rig/StickFigure.tsx      Phase 2: cylinder rig
   rig/AnatomySegments.tsx  Phase 3: rigid layered segments (skin/muscle/bone)
-  rig/SkeletonModel.tsx    Phase 3+: rigged GLB skeleton driven via its armature
+  rig/RigModel.tsx         Phase 3+: rigged GLB models driven via their armatures
   scene/Scene3D.tsx        Phase 4: lights, ground, OrbitControls, stats
   ui/HUD.tsx               toggles, FPS, status messages
 ```
@@ -72,12 +73,17 @@ src/
 
 ## Model asset status (Phase 3)
 
-The default view drives `public/models/female_skeleton.glb` — a rigged,
-skinned skeleton (Sketchfab export, 118 joints, 14 skinned meshes, ~40k
-verts). `rig/SkeletonModel.tsx` binds retargeted bone directions onto its
-armature joints (hip and chest get two-axis lateral+up alignment so body yaw
-and lean come through; limbs/head/feet are single-axis), so the bone meshes
-articulate smoothly at the joints instead of moving as rigid chunks.
+Two rigged GLB models are driven through their armatures by
+`rig/RigModel.tsx`, which binds retargeted bone directions onto armature
+joints (hip and chest get two-axis lateral+up alignment so body yaw and lean
+come through; limbs/head/feet are single-axis). Adding another rigged model
+is a matter of writing a `RigModelConfig` (URL, joint names, facing, height):
+
+- `female_skeleton.glb` — rigged, skinned skeleton (Sketchfab export,
+  118 joints, 14 skinned meshes, ~40k verts). Default view.
+- `pink-character.glb` — Blender cartoon character (FK bones: pelvis/spine/
+  chest/neck/head + limbs; the CTRL_* IK helpers are ignored, and its feet
+  have no toe joint so they stay rigid relative to the shins).
 
 **Attribution:** check the Sketchfab page the model came from for its license
 (most are CC-BY and require crediting the author) and add the credit here.
