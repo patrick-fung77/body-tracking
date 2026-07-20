@@ -2,17 +2,22 @@ import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Html, OrbitControls, Stats } from "@react-three/drei";
 import { StickFigure } from "../rig/StickFigure";
-import { SkeletonModel } from "../rig/SkeletonModel";
+import {
+  RigModel,
+  FEMALE_SKELETON,
+  PINK_CHARACTER,
+  HIP_HEIGHT as RIG_HIP_HEIGHT,
+} from "../rig/RigModel";
 import {
   AnatomySegments,
   type LayerVisibility,
 } from "../rig/AnatomySegments";
 import type { Retargeter } from "../rig/retarget";
 
-export type ViewMode = "skeleton3d" | "anatomy" | "stick";
+export type ViewMode = "skeleton3d" | "pink" | "anatomy" | "stick";
 
 /** World landmarks are hip-origin, so lift the rig to standing height. */
-const HIP_HEIGHT = 0.95;
+const HIP_HEIGHT = RIG_HIP_HEIGHT;
 
 export function Scene3D({
   retargeter,
@@ -49,15 +54,18 @@ export function Scene3D({
         {view === "anatomy" && (
           <AnatomySegments retargeter={retargeter} layers={layers} />
         )}
-        {view === "skeleton3d" && (
+        {(view === "skeleton3d" || view === "pink") && (
           <Suspense
             fallback={
               <Html center>
-                <div className="model-loading">Loading skeleton model…</div>
+                <div className="model-loading">Loading 3D model…</div>
               </Html>
             }
           >
-            <SkeletonModel retargeter={retargeter} />
+            <RigModel
+              retargeter={retargeter}
+              config={view === "pink" ? PINK_CHARACTER : FEMALE_SKELETON}
+            />
           </Suspense>
         )}
         {showAxes && <axesHelper args={[0.6]} />}
