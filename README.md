@@ -19,8 +19,8 @@ and step back so your full body is in frame.
 
 - **Orbit** the 3D camera with the mouse (drag / scroll) — independent of tracking.
 - **Model** switcher: realistic rigged skeleton (default), pink cartoon
-  character, layered anatomy primitives, or the debug stick figure
-  (blue = your left, orange = your right).
+  character, mecha warrior, layered anatomy primitives, or the debug stick
+  figure (blue = your left, orange = your right).
 - **Layers** panel toggles skin / muscle / skeleton on the *anatomy primitives*
   model (the realistic model is skeleton-only, so layers don't apply to it).
 - **Mirror mode** flips X so the model moves like a mirror image.
@@ -84,9 +84,18 @@ is a matter of writing a `RigModelConfig` (URL, joint names, facing, height):
 - `pink-character.glb` — Blender cartoon character (FK bones: pelvis/spine/
   chest/neck/head + limbs; the CTRL_* IK helpers are ignored, and its feet
   have no toe joint so they stay rigid relative to the shins).
+- `mecha_warrior.glb` — "BOT MECHA WARRIOR 3D" by Oscar Creativo
+  (Sketchfab). Auto-Rig-Pro-style rig; the stretch chain is driven, twist
+  and finger bones follow rigidly. The source asset was 50 MB and is served
+  Draco+WebP compressed (~6 MB); the Draco decoder is bundled under
+  `public/draco/` so no CDN is involved. Recompress future large models
+  with: `npx @gltf-transform/cli optimize in.glb out.glb --compress draco
+  --texture-compress webp --texture-size 1024`.
 
-**Attribution:** check the Sketchfab page the model came from for its license
-(most are CC-BY and require crediting the author) and add the credit here.
+**Attribution:** "BOT MECHA WARRIOR 3D" by Oscar Creativo (Sketchfab). For
+the skeleton and any other downloaded models, check their source pages for
+license terms (most Sketchfab assets are CC-BY and require crediting the
+author) and record the credits here.
 
 The "Anatomy (layers)" view keeps the earlier **placeholder colored
 primitives** — concentric skeleton/muscle/skin shells per rigid segment —

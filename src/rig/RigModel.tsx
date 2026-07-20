@@ -135,6 +135,49 @@ export const PINK_CHARACTER: RigModelConfig = {
   ],
 };
 
+/**
+ * "BOT MECHA WARRIOR 3D" by Oscar Creativo (Sketchfab; Auto-Rig-Pro-style
+ * rig with stretch/twist bones and scale-compensation wrapper nodes). Only
+ * the stretch chain is driven; twist and finger bones follow rigidly.
+ * Source asset was Draco+WebP compressed from 50 MB to ~6 MB.
+ */
+export const MECHA_WARRIOR: RigModelConfig = {
+  url: `${import.meta.env.BASE_URL}models/mecha_warrior.glb`,
+  height: 1.85,
+  hipJoint: "root_x",
+  flipFacing: false,
+  bindings: [
+    {
+      joint: "root_x",
+      bone: "pelvis",
+      restFrom: "thigh_stretch_l",
+      restTo: "thigh_stretch_r",
+      up: { bone: "torso", restFrom: "root_x", restTo: "spine_05_x" },
+    },
+    {
+      joint: "spine_03_x",
+      bone: "shoulders",
+      restFrom: "shoulder_l",
+      restTo: "shoulder_r",
+      up: { bone: "torso", restFrom: "root_x", restTo: "neck_x" },
+    },
+    { joint: "neck_x", bone: "head", restTo: "head_x" },
+    { joint: "arm_stretch_l", bone: "leftUpperArm", restTo: "forearm_stretch_l" },
+    { joint: "forearm_stretch_l", bone: "leftForearm", restTo: "hand_l" },
+    { joint: "arm_stretch_r", bone: "rightUpperArm", restTo: "forearm_stretch_r" },
+    { joint: "forearm_stretch_r", bone: "rightForearm", restTo: "hand_r" },
+    { joint: "thigh_stretch_l", bone: "leftThigh", restTo: "leg_stretch_l" },
+    { joint: "leg_stretch_l", bone: "leftShin", restTo: "foot_l" },
+    { joint: "foot_l", bone: "leftFoot", restTo: "toes_01_l" },
+    { joint: "thigh_stretch_r", bone: "rightThigh", restTo: "leg_stretch_r" },
+    { joint: "leg_stretch_r", bone: "rightShin", restTo: "foot_r" },
+    { joint: "foot_r", bone: "rightFoot", restTo: "toes_01_r" },
+  ],
+};
+
+/** Local Draco decoder so compressed GLBs load without any CDN. */
+const DRACO_PATH = `${import.meta.env.BASE_URL}draco/`;
+
 export function RigModel({
   retargeter,
   config,
@@ -142,7 +185,7 @@ export function RigModel({
   retargeter: Retargeter;
   config: RigModelConfig;
 }) {
-  const { scene } = useGLTF(config.url);
+  const { scene } = useGLTF(config.url, DRACO_PATH);
   const rig = useMemo(() => buildRig(scene, config), [scene, config]);
 
   useFrame(() => {
@@ -154,8 +197,9 @@ export function RigModel({
   return <primitive object={rig.wrapper} />;
 }
 
-useGLTF.preload(FEMALE_SKELETON.url);
-useGLTF.preload(PINK_CHARACTER.url);
+useGLTF.preload(FEMALE_SKELETON.url, DRACO_PATH);
+useGLTF.preload(PINK_CHARACTER.url, DRACO_PATH);
+useGLTF.preload(MECHA_WARRIOR.url, DRACO_PATH);
 
 /* ------------------------------------------------------------------ */
 

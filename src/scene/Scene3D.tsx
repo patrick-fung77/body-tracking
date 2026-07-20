@@ -6,7 +6,9 @@ import {
   RigModel,
   FEMALE_SKELETON,
   PINK_CHARACTER,
+  MECHA_WARRIOR,
   HIP_HEIGHT as RIG_HIP_HEIGHT,
+  type RigModelConfig,
 } from "../rig/RigModel";
 import {
   AnatomySegments,
@@ -14,7 +16,13 @@ import {
 } from "../rig/AnatomySegments";
 import type { Retargeter } from "../rig/retarget";
 
-export type ViewMode = "skeleton3d" | "pink" | "anatomy" | "stick";
+export type ViewMode = "skeleton3d" | "pink" | "mecha" | "anatomy" | "stick";
+
+const RIG_CONFIGS: Partial<Record<ViewMode, RigModelConfig>> = {
+  skeleton3d: FEMALE_SKELETON,
+  pink: PINK_CHARACTER,
+  mecha: MECHA_WARRIOR,
+};
 
 /** World landmarks are hip-origin, so lift the rig to standing height. */
 const HIP_HEIGHT = RIG_HIP_HEIGHT;
@@ -54,7 +62,7 @@ export function Scene3D({
         {view === "anatomy" && (
           <AnatomySegments retargeter={retargeter} layers={layers} />
         )}
-        {(view === "skeleton3d" || view === "pink") && (
+        {RIG_CONFIGS[view] && (
           <Suspense
             fallback={
               <Html center>
@@ -62,10 +70,7 @@ export function Scene3D({
               </Html>
             }
           >
-            <RigModel
-              retargeter={retargeter}
-              config={view === "pink" ? PINK_CHARACTER : FEMALE_SKELETON}
-            />
+            <RigModel retargeter={retargeter} config={RIG_CONFIGS[view]} />
           </Suspense>
         )}
         {showAxes && <axesHelper args={[0.6]} />}

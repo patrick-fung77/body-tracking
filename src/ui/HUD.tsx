@@ -50,6 +50,7 @@ export function HUD(props: HudProps) {
           >
             <option value="skeleton3d">Skeleton (realistic)</option>
             <option value="pink">Pink character</option>
+            <option value="mecha">Mecha warrior</option>
             <option value="anatomy">Anatomy (layers)</option>
             <option value="stick">Stick figure</option>
           </select>
