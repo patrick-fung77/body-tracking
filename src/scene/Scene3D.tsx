@@ -4,39 +4,36 @@ import { Html, OrbitControls, Stats } from "@react-three/drei";
 import { StickFigure } from "../rig/StickFigure";
 import {
   RigModel,
-  FEMALE_SKELETON,
-  PINK_CHARACTER,
-  MECHA_WARRIOR,
-  HIP_HEIGHT as RIG_HIP_HEIGHT,
+  HIP_HEIGHT,
   type RigModelConfig,
 } from "../rig/RigModel";
 import {
   AnatomySegments,
   type LayerVisibility,
 } from "../rig/AnatomySegments";
+import { ModelErrorBoundary } from "./ModelErrorBoundary";
 import type { Retargeter } from "../rig/retarget";
 
-export type ViewMode = "skeleton3d" | "pink" | "mecha" | "anatomy" | "stick";
-
-const RIG_CONFIGS: Partial<Record<ViewMode, RigModelConfig>> = {
-  skeleton3d: FEMALE_SKELETON,
-  pink: PINK_CHARACTER,
-  mecha: MECHA_WARRIOR,
-};
-
-/** World landmarks are hip-origin, so lift the rig to standing height. */
-const HIP_HEIGHT = RIG_HIP_HEIGHT;
+/**
+ * View is either one of the primitive modes or a rig model; when
+ * `rigConfig` is set it wins over the primitive modes.
+ */
+export type PrimitiveView = "anatomy" | "stick";
 
 export function Scene3D({
   retargeter,
-  view,
+  rigConfig,
+  primitiveView,
   layers,
   showAxes,
+  onModelError,
 }: {
   retargeter: Retargeter;
-  view: ViewMode;
+  rigConfig: RigModelConfig | null;
+  primitiveView: PrimitiveView | null;
   layers: LayerVisibility;
   showAxes: boolean;
+  onModelError: (message: string) => void;
 }) {
   return (
     <Canvas shadows camera={{ position: [0, 1.5, 2.8], fov: 50 }}>
@@ -58,20 +55,22 @@ export function Scene3D({
       <directionalLight position={[-3, 2, -2]} intensity={0.4} />
 
       <group position={[0, HIP_HEIGHT, 0]}>
-        {view === "stick" && <StickFigure retargeter={retargeter} />}
-        {view === "anatomy" && (
+        {primitiveView === "stick" && <StickFigure retargeter={retargeter} />}
+        {primitiveView === "anatomy" && (
           <AnatomySegments retargeter={retargeter} layers={layers} />
         )}
-        {RIG_CONFIGS[view] && (
-          <Suspense
-            fallback={
-              <Html center>
-                <div className="model-loading">Loading 3D model…</div>
-              </Html>
-            }
-          >
-            <RigModel retargeter={retargeter} config={RIG_CONFIGS[view]} />
-          </Suspense>
+        {rigConfig && (
+          <ModelErrorBoundary key={rigConfig.url} onError={onModelError}>
+            <Suspense
+              fallback={
+                <Html center>
+                  <div className="model-loading">Loading 3D model…</div>
+                </Html>
+              }
+            >
+              <RigModel retargeter={retargeter} config={rigConfig} />
+            </Suspense>
+          </ModelErrorBoundary>
         )}
         {showAxes && <axesHelper args={[0.6]} />}
       </group>

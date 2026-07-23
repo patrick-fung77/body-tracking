@@ -1,14 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { poseStore } from "../pose/poseStore";
 import type { TrackingStatus } from "../pose/usePoseTracker";
 import type { LayerVisibility } from "../rig/AnatomySegments";
-import type { ViewMode } from "../scene/Scene3D";
+
+export interface ModelOption {
+  id: string;
+  label: string;
+}
 
 export interface HudProps {
   status: TrackingStatus;
   statusDetail: string;
-  view: ViewMode;
-  onViewChange: (v: ViewMode) => void;
+  view: string;
+  modelOptions: ModelOption[];
+  onViewChange: (v: string) => void;
+  onImport: (file: File) => void;
+  modelError: string | null;
   layers: LayerVisibility;
   onLayersChange: (l: LayerVisibility) => void;
   mirror: boolean;
@@ -21,6 +28,7 @@ export interface HudProps {
 export function HUD(props: HudProps) {
   const [poseFps, setPoseFps] = useState(0);
   const [personVisible, setPersonVisible] = useState(false);
+  const fileRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -38,6 +46,9 @@ export function HUD(props: HudProps) {
   return (
     <>
       {banner && <div className="banner">{banner}</div>}
+      {props.modelError && (
+        <div className="banner banner-error">{props.modelError}</div>
+      )}
 
       <div className="panel">
         <div className="panel-title">Anatomy Mirror</div>
@@ -46,15 +57,38 @@ export function HUD(props: HudProps) {
           Model
           <select
             value={props.view}
-            onChange={(e) => props.onViewChange(e.target.value as ViewMode)}
+            onChange={(e) => props.onViewChange(e.target.value)}
           >
-            <option value="skeleton3d">Skeleton (realistic)</option>
-            <option value="pink">Pink character</option>
-            <option value="mecha">Mecha warrior</option>
-            <option value="anatomy">Anatomy (layers)</option>
-            <option value="stick">Stick figure</option>
+            {props.modelOptions.map((o) => (
+              <option key={o.id} value={o.id}>
+                {o.label}
+              </option>
+            ))}
           </select>
         </label>
+
+        <button
+          type="button"
+          className="import-btn"
+          onClick={() => fileRef.current?.click()}
+        >
+          Import GLB model…
+        </button>
+        <input
+          ref={fileRef}
+          type="file"
+          accept=".glb,.gltf,model/gltf-binary"
+          style={{ display: "none" }}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) props.onImport(file);
+            e.target.value = ""; // allow re-importing the same file
+          }}
+        />
+        <div className="hint">
+          Needs a rigged humanoid model. Files stay on your device (this
+          session only).
+        </div>
 
         {props.view === "anatomy" && (
           <fieldset className="layers">
