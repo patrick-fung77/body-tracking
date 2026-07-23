@@ -102,6 +102,32 @@
   color: #aab2ba;
 }
 
+.import-btn {
+  background: #2a3a4f;
+  color: inherit;
+  border: 1px solid rgba(120, 170, 255, 0.35);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.import-btn:hover {
+  background: #33475f;
+}
+
+.panel .hint {
+  font-size: 10.5px;
+  color: #8a929a;
+  line-height: 1.35;
+}
+
+.banner-error {
+  top: 58px;
+  border-color: rgba(255, 110, 110, 0.6);
+  color: #ff9d9d;
+}
+
 .panel .fps {
   font-variant-numeric: tabular-nums;
   color: #9fd49f;

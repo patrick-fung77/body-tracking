@@ -21,6 +21,9 @@ and step back so your full body is in frame.
 - **Model** switcher: realistic rigged skeleton (default), pink cartoon
   character, mecha warrior, layered anatomy primitives, or the debug stick
   figure (blue = your left, orange = your right).
+- **Import GLB model…** loads any humanoid-rigged GLB from your device — the
+  skeleton is auto-detected, no code changes needed. Files never leave the
+  browser and last for the current session only.
 - **Layers** panel toggles skin / muscle / skeleton on the *anatomy primitives*
   model (the realistic model is skeleton-only, so layers don't apply to it).
 - **Mirror mode** flips X so the model moves like a mirror image.
@@ -45,6 +48,7 @@ src/
   rig/StickFigure.tsx      Phase 2: cylinder rig
   rig/AnatomySegments.tsx  Phase 3: rigid layered segments (skin/muscle/bone)
   rig/RigModel.tsx         Phase 3+: rigged GLB models driven via their armatures
+  rig/autoRig.ts           humanoid joint auto-detection (names + structure)
   scene/Scene3D.tsx        Phase 4: lights, ground, OrbitControls, stats
   ui/HUD.tsx               toggles, FPS, status messages
 ```
@@ -73,11 +77,18 @@ src/
 
 ## Model asset status (Phase 3)
 
-Two rigged GLB models are driven through their armatures by
-`rig/RigModel.tsx`, which binds retargeted bone directions onto armature
-joints (hip and chest get two-axis lateral+up alignment so body yaw and lean
-come through; limbs/head/feet are single-axis). Adding another rigged model
-is a matter of writing a `RigModelConfig` (URL, joint names, facing, height):
+Rigged GLB models are driven through their armatures by `rig/RigModel.tsx`,
+which binds retargeted bone directions onto armature joints (hip and chest
+get two-axis lateral+up alignment so body yaw and lean come through;
+limbs/head/feet are single-axis). Joints are discovered automatically by
+`rig/autoRig.ts`: it anchors on reliably-named bones (forearm/shin/hand/
+foot/neck/head across DAZ, Blender/Rigify, Mixamo, Unreal, and Auto-Rig-Pro
+conventions), derives the rest structurally (upper arm = nearest
+distinctly-positioned ancestor of the forearm, hip = common ancestor of the
+thighs, chest = common ancestor of the upper arms), excludes twist/IK/
+control helpers, and infers facing from the hip axis. Adding a model —
+including user imports at runtime — therefore needs no per-model code.
+Bundled models:
 
 - `female_skeleton.glb` — rigged, skinned skeleton (Sketchfab export,
   118 joints, 14 skinned meshes, ~40k verts). Default view.
